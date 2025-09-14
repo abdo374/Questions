@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>اختبار درس السيرة</title>
+<style>
+    body {
+        font-family: 'Tahoma', sans-serif;
+        background-color: #f4f4f9;
+        margin: 0;
+        padding: 0;
+        direction: rtl;
+        font-size:30px
+    }
+    h1 {
+        text-align: center;
+        color: #2c3e50;
+        margin-top: 20px;
+    }
+    .quiz-container {
+        width: 80%;
+        margin: auto;
+        background: #fff;
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.2);
+        margin-bottom: 30px;
+    }
+    .question {
+        margin-bottom: 20px;
+        font-weight: bold;
+        color: #34495e;
+        font-size:30px
+    }
+    .options label {
+        display: block;
+        background: #ecf0f1;
+        padding: 8px;
+        margin: 5px 0;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+    .options label:hover {
+        background: #dfe6e9;
+    }
+    .correct {
+        background-color: #2ecc71 !important;
+        color: white;
+    }
+    .wrong {
+        background-color: #e74c3c !important;
+        color: white;
+    }
+    button {
+        display: block;
+        width: 100%;
+        padding: 15px;
+        background: #2980b9;
+        color: white;
+        border: none;
+        font-size: 25px;
+        border-radius: 8px;
+        cursor: pointer;
+        margin-top: 15px;
+    }
+    button:hover {
+        background: #3498db;
+    }
+    #result {
+        text-align: center;
+        font-size: 30px;
+        margin-top: 15px;
+        font-weight: bold;
+    }
+    footer {
+        text-align: center;
+        font-size: 20px;
+        color: black;
+        font-weight:bold;
+        margin: 20px 0;
+    }
+    input{
+        text-align: center;
+        font-size: 35px;
+        padding:25px;
+        color: black;
+        font-weight:bold;
+        margin: 20px 0;
+    }
+</style>
+</head>
+<body>
+<h1>اختبار درس السيرة</h1>
+    
+<input type="text" id="username" placeholder="الإسم" required />
+<div class="quiz-container" id="quiz"></div>
+<button onclick="submitQuiz()">تصحيح الاجابات وعرض الدرجة</button>
+<div id="result"></div>
+    
+<footer>تم صنعه بواسطة عبدالله الصياد</footer>
+
+<script>
+const quizData = [
+    {
+        question: "ماهو دور عبدالله بن ابي بكر في الهجرة؟",
+        options: ["دليل النبي في الهجرة", "كان يرعى الغنم", "يسمع الأخبار من قريش وينقلها للنبي"],
+        answer: "يسمع الأخبار من قريش وينقلها للنبي"
+    },
+    {
+        question: "أين صلى النبي أول جمعة؟",
+        options: ["عند بني سالم بن عوف", "في مسجد المدينة", "في مسجد قباء"],
+        answer: "عند بني سالم بن عوف"
+    },
+    {
+        question: "ما هو دور عامر بن فهيرة في الهجرة؟",
+        options: ["دليل النبي في الهجرة", "كان يرعى الغنم","يسمع الاخبار من قريش وينقلها للنبي"],
+        answer: "كان يرعى الغنم"
+    },
+    {
+        question: "ابن من أبناء أبي بكر لم يسلم حتى الهجرة فمن هو؟",
+        options: ["عكرمة", "عبد الرحمن", "عبدالله"],
+        answer: "عبد الرحمن"
+    },
+    {
+        question: "ماهي الجائزة التي عرضها كفار قريش لمن يجد النبي؟",
+        options: ["١٠٠ ناقة","١٠٠ دينار","٥٠ ناقة"],
+        answer: "١٠٠ ناقة"
+    },
+    {
+        question: "من هو الرجل الذي أراد أن يأخذ الجائزة وحده وعمى على الكفار؟",
+        options: ["عتبة بن ربيعة", "سراقة بن مالك", "أبو جهل"],
+        answer: "سراقة بن مالك"
+    },
+    {
+        question: "لماذا مكث علي بن أبي طالب ثلاثة أيام قبل أن يهاجر؟",
+        options: ["خوفا من كفار قريش", "لأن أبوه منعه من الهجرة","ليرد الأمانات إلى أهلها"],
+        answer: "ليرد الأمانات إلى أهلها"
+    },
+    {
+        question: "كم المدة التي مكثها النبي في مسجد قباء؟",
+        options: ["20 ليلة", "15 ليلة", "14 ليلة"],
+        answer: "14 ليلة"
+    },
+    {
+        question: "ما أجر ركعتين في مسجد قباء؟",
+        options: ["أجر حجة", "أجر عمرة", "أجر 100 صلاة"],
+        answer: "أجر عمرة"
+    },
+    {
+        question: "ماهو أول مسجد أسس في الإسلام؟",
+        options: ["مسجد قباء", "المسجد النبوي" , "المسجد الأموي"],
+        answer: "مسجد قباء"
+    }
+];
+
+function loadQuiz() {
+    const quizContainer = document.getElementById('quiz');
+    quizData.forEach((q, index) => {
+        const questionDiv = document.createElement('div');
+        questionDiv.classList.add('question');
+        questionDiv.innerHTML = `${index + 1}. ${q.question}`;
+        const optionsDiv = document.createElement('div');
+        optionsDiv.classList.add('options');
+        q.options.forEach(option => {
+            const label = document.createElement('label');
+            label.innerHTML = `<input type="radio" name="q${index}" value="${option}"> ${option}`;
+            optionsDiv.appendChild(label);
+        });
+        quizContainer.appendChild(questionDiv);
+        quizContainer.appendChild(optionsDiv);
+    });
+}
+
+function submitQuiz() {
+    let name = document.getElementById("username").value.trim();
+    if (name === "") {
+        alert("من فضلك اكتب اسمك قبل بدء التصحيح.");
+        return;
+    }
+
+    let score = 0;
+    const marksPerQuestion = 5;
+    let answers = [];
+
+    quizData.forEach((q, index) => {
+        const selected = document.querySelector(`input[name="q${index}"]:checked`);
+        document.querySelectorAll(`input[name="q${index}"]`).forEach(input => {
+            if (input.value === q.answer){
+                input.parentElement.classList.add('correct');
+            } else if (selected && input.value === selected.value) {
+                input.parentElement.classList.add('wrong');
+            }
+        });
+        if (selected) {
+            answers.push(selected.value);
+            if (selected.value === q.answer) {
+                score += marksPerQuestion;
+            }
+        } else {
+            answers.push("بدون إجابة");
+        }
+    });
+
+    let message = "حاول تجاوب على كل الأسئلة يا " + name;
+    if (score > 45) {
+        message = "ممتاز يا " + name + " 🎉";
+    } else if (score > 30) {
+        message = "جيد جدًا يا " + name + " 👍";
+    } else if (score > 0){
+        message = "ممكن تكون أحسن يا " + name + " 💪";
+    }
+
+    document.getElementById('result').innerText = 
+      `درجتك ${score} من 50 - ${message}`;
+
+    // 🔗 رابط Web App من Google Apps Script (غيره برابطك)
+    const scriptURL = "https://script.google.com/macros/s/AKfycbwpnMyrtOfBy3RxEatfy3CG5YUgRZR9ODeAssGAHlBZhFbVz4cdstKTabeu1o1Z4eudbw/exec";
+
+    // إرسال البيانات لـ Google Sheets
+    fetch(scriptURL, {
+        method: "POST",
+        body: JSON.stringify({
+            name: name,
+            score: score,
+            answers: answers
+        }),
+        headers: { "Content-Type": "application/json" }
+    })
+    .then(res => res.text())
+    .then(msg => console.log("تم الحفظ:", msg))
+    .catch(err => console.error("خطأ:", err));
+
+    // قفل الاختبار بعد التصحيح
+    document.querySelectorAll("input").forEach(el => el.disabled = true);
+    document.querySelector("button").disabled = true;
+}
+
+loadQuiz();
+</script>
+</body>
+</html>
